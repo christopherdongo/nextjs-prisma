@@ -3,8 +3,8 @@ import JobsList from "../../component/Jobs/JobsList";
 
 type postedByPage = {
   id: string;
-  name: string;
-  email: string;
+  name: string | null;
+  email: string | null;
   emailVerified: Date | null;
   image: string;
 };
@@ -17,7 +17,7 @@ export type PageJobs = {
   salary?: string | null;
   company: string;
   postedById: string;
-  postedBy?: postedByPage;
+  postedBy: postedByPage | null;
   id: string;
 };
 
@@ -98,8 +98,8 @@ export default async function JobsPage({
 
         <div className="grid gap-6 pt-10">
 
-          {jobs.length > 0 &&
-            jobs.map((job: PageJobs) => {
+          {jobs?.length > 0 &&
+            jobs?.map((job) => {
               return (
                 <JobsList
                   key={job.id}

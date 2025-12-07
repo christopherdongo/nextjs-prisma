@@ -2,10 +2,10 @@ import Link from "next/link";
 
 type postedByProps = {
  id: string;
- name: string;
- email: string;
+ name: string | null;
+ email: string | null;
  emailVerified: Date | null;
- image: string
+ image: string | null
 }
 
 export type PropsJobs = {
