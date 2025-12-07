@@ -1,0 +1,7 @@
+.next
+node_modules
+out
+
+src/generated/**
+src/types/**
+**/*.d.ts
