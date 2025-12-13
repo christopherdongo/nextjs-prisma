@@ -135,6 +135,69 @@ export default async function DashboardPage () {
                     </div>
                 </div>
 
+                <div>
+
+                    <h2 className="text-xl font-semibold text-gray-900 mb-6">Your Applications</h2>
+
+                    <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-200">
+                     {
+                        applications.length === 0 ? (
+                             <p className="p-6 text-gray-500 text-center">You haven&apos;t applied to any jobs yet</p>
+                        ) : (
+                            applications.map((application) => (
+                                <div key={application.id} className="p-6">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <h3 className="text-lg font-medium text-gray-900 mb-1">
+                                               {application.job.title}
+                                            </h3>
+                                            <p className="text-gray-600 mb-2">
+                                                {application.job.company}
+                                            </p>
+                                            <div className="flex items-center text-sm text-gray-500">
+                                              <span>{application.job.location}</span>
+                                              <span className="mx-2">*</span>
+                                              <span>{application.job.type}</span>
+                                              <span>*</span>
+                                              <span>
+                                                Applied{""}
+                                                {
+                                                    formatDistanceToNow(new Date(application.appliedAt), {
+                                                        addSuffix: true
+                                                    })
+                                                }
+                                              </span>
+                                            </div>
+                                        </div>
+
+                                        <span
+                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${application.status === "PENDING" ? "bg-yellow-100 text-yellow-800" : application.status === "ACCEPTED"}`}
+                                        >
+                                          {application.status}
+                                        </span>
+
+                                    </div>
+                                    <div
+                                    className="mt-4 flex justify-end"
+                                    >
+                                        <Link
+                                        href={`/jobs/${application.job.id}`}
+                                        className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+                                        >
+                                        View Job
+                                        </Link>
+
+                                    </div>
+                                </div>
+                            ))
+                        )
+                     }
+                       
+
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
