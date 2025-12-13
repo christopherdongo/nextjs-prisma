@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { auth } from "../../../auth" 
 import { redirect } from "next/navigation"
+import { formatDistanceToNow } from "date-fns";
+import { prisma } from "@/lib/prisma";
+import React from "react";
 
 export default async function DashboardPage () {
 
@@ -10,6 +13,43 @@ export default async function DashboardPage () {
       redirect("/auth/sign");
     }
 
+
+    const [applications, postedJobs] = await Promise.all([ 
+        // application query
+        prisma.application.findMany({
+            where: {
+                userId: session.user.id
+            },
+            include: {
+                job: {
+                    include: {
+                        postedBy: true
+                    }
+                }
+            },
+            orderBy: {
+                appliedAt: "desc"
+            }
+        }),
+
+        // posted
+
+        prisma.job.findMany({
+            where: {
+                postedById: session.user.id,
+            },
+            include: {
+                _count: {
+                    select: {
+                        applications: true,
+                    }
+                }
+            },
+            orderBy: {
+                postedAt: "desc"
+            }
+        })
+    ])
 
 
     return (
@@ -35,7 +75,61 @@ export default async function DashboardPage () {
                       
                     </div>
 
-                    <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-200">
+                    <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-200 pl-8 pr-8">
+
+                        {
+                            postedJobs.length === 0 ? (
+                                <p
+                                className="p-6 text-gray-500 text-center">You havent posted any jobs yet.</p>
+                            ) : (
+                                postedJobs.map((job) => (
+                                    <React.Fragment key={job.id}><div className="flex justify-between items-start pt-4 pb-4"
+                                    key={job.id}
+                                    >
+                                        <div>
+                                            <h3 className="text-lg font-medium text-gray-900 mb-1">
+                                                {job.title}
+                                            </h3>
+
+                                            <p
+                                                className="text-gray-600 mb-2"
+                                            >{job.company}</p>
+                                            <div
+                                                className="flex items-center text-sm text-gray-500"
+                                            >
+                                                <span>{job.location}</span>
+                                                <span>{job.type}</span>
+                                                <span className="mx-2">*</span>
+                                                <span>
+                                                    {formatDistanceToNow(new Date(job.postedAt), {
+                                                        addSuffix: true,
+                                                    })}
+                                                </span>
+
+                                            </div>
+                                        </div>
+
+                                        <div className="text-right">
+                                            <span
+                                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-black"
+                                            >
+                                                {job._count.applications} applications
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+                                    <div className="mt-4 flex justify-end space-x-4">
+                                            <Link
+                                                href={`/jobs/${job.id}`}
+                                                className=""
+                                            >
+
+                                            </Link>
+                                    </div></React.Fragment>
+                                ))
+                            )
+                        }
                         
 
                     </div>
