@@ -18,6 +18,8 @@ export default async function Home() {
     }
   })
 
+  console.log('recentJObs', recentJobs)
+
   return (
     <div
     className="
@@ -46,10 +48,49 @@ export default async function Home() {
 
       <section>
         <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Jobs</h2>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+           {
+            recentJobs.map((job) => (
+              <div
+              key={job.id}
+              className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+              >
+                <h3
+                className="text-xl font-semibold text-gray-900 mb-2"
+                >
+                   {job.title}
+                </h3>
+                <p
+                className="text-gray-600 mb-2"
+                >{job.company}</p>
+                <div
+                className="flex items-center text-sm text-gray-500 mb-4"
+                >
+                  <span>{job.location}</span>
+                  <span>{job.type}</span>
+                </div>
+                <p
+                className="text-gray-600 mb-4 line-clamp-2"
+                >{job.description}</p>
+                <Link
+                href={`/jobs/${job.id}`}
+                className="text-indigo-600 hover:text-indigo-700 font-medium"
+                >
+                View Details
+                </Link>
 
-        <div>
-          
+              </div>
+            ))
+           }
         </div>
+
+            <div className="flex justify-center items-center mt-6">
+            <Link href="/jobs"
+            className="text-indigo-600 hover:text-indigo-700 font-medium"
+            >
+            View all Jobs
+            </Link>
+           </div>
       </section>
     </div>
   );
